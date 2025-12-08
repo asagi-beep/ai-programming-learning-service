@@ -557,7 +557,7 @@ function FeaturesSection() {
         {/* 特徴カード */}
         <Grid container spacing={4}>
           {features.map((feature, index) => (
-            <Grid key={index} size={{ xs: 12, md: 4 }}>
+            <Grid key={index} size={{ xs: 12, md: 4 }} sx={{ display: "flex" }}>
               <Card
                 sx={{
                   height: "100%",
@@ -689,7 +689,7 @@ function StepsSection() {
         {/* ステップカード */}
         <Grid container spacing={4} alignItems="stretch">
           {steps.map((step, index) => (
-            <Grid key={index} size={{ xs: 12, md: 4 }}>
+            <Grid key={index} size={{ xs: 12, md: 4 }} sx={{ display: "flex" }}>
               <Box
                 sx={{
                   height: "100%",
@@ -937,11 +937,11 @@ function Footer() {
               </Stack>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 8 }}>
+            <Grid size={{ xs: 12, md: 8 }} sx={{ display: "flex", justifyContent: { sm: "flex-end" } }}>
               <Stack
                 direction={{ xs: "column", sm: "row" }}
                 spacing={{ xs: 2, sm: 4 }}
-                justifyContent={{ md: "flex-end" }}
+                justifyContent={{ sm: "flex-end" }}
                 flexWrap="wrap"
               >
                 {footerLinks.map((link) => (
