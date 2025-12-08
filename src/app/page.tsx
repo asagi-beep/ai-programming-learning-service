@@ -689,7 +689,7 @@ function StepsSection() {
         {/* ステップカード */}
         <Grid container spacing={4} alignItems="stretch">
           {steps.map((step, index) => (
-            <Grid key={index} size={{ xs: 12, md: 4 }} sx={{ display: "flex" }}>
+            <Grid key={index} size={{ xs: 12, md: 4 }} sx={{ display: "flex", position: "relative" }}>
               <Box
                 sx={{
                   height: "100%",

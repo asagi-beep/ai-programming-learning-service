@@ -1,11 +1,5 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error("MONGODB_URI環境変数が設定されていません。.env.localファイルを確認してください。");
-}
-
 /**
  * グローバルにMongoose接続をキャッシュする
  * 開発環境でのHot Reloadingによる再接続を防ぐ
@@ -31,6 +25,13 @@ if (!global.mongoose) {
  * 既存の接続がある場合はそれを再利用する
  */
 async function connectDB(): Promise<typeof mongoose> {
+  // 環境変数のチェックは関数内で行う（ビルド時のエラーを防ぐ）
+  const MONGODB_URI = process.env.MONGODB_URI;
+  
+  if (!MONGODB_URI) {
+    throw new Error("MONGODB_URI環境変数が設定されていません。.env.localファイルを確認してください。");
+  }
+
   if (cached.conn) {
     return cached.conn;
   }
@@ -40,7 +41,7 @@ async function connectDB(): Promise<typeof mongoose> {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
       console.log("MongoDB接続成功");
       return mongoose;
     });
