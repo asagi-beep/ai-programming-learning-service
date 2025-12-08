@@ -937,11 +937,11 @@ function Footer() {
               </Stack>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 8 }} sx={{ display: "flex", justifyContent: { sm: "flex-end" } }}>
+            <Grid size={{ xs: 12, md: 8 }} sx={{ display: "flex", justifyContent: { md: "flex-end" } }}>
               <Stack
                 direction={{ xs: "column", sm: "row" }}
                 spacing={{ xs: 2, sm: 4 }}
-                justifyContent={{ sm: "flex-end" }}
+                justifyContent={{ md: "flex-end" }}
                 flexWrap="wrap"
               >
                 {footerLinks.map((link) => (
