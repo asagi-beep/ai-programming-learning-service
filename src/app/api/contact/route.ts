@@ -187,13 +187,15 @@ export async function POST(request: NextRequest) {
     const contact = new Contact(sanitizedData);
     await contact.save();
 
-    // 管理者にメール通知（非同期で実行、エラーでも処理継続）
-    sendNotificationEmail({
-      ...sanitizedData,
-      createdAt: contact.createdAt,
-    }).catch((error) => {
+    // 管理者にメール通知（完了を待つ、エラーでも処理継続）
+    try {
+      await sendNotificationEmail({
+        ...sanitizedData,
+        createdAt: contact.createdAt,
+      });
+    } catch (error) {
       console.error("メール送信処理でエラー:", error);
-    });
+    }
 
     return NextResponse.json(
       {
