@@ -223,3 +223,4 @@ export default function PrivacyPage() {
     </Box>
   );
 }
+
