@@ -1,0 +1,200 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { CodeBracketIcon, Bars3Icon, XMarkIcon, SunIcon, MoonIcon } from "@heroicons/react/24/outline";
+import { useTheme } from "@/contexts/ThemeContext";
+
+const navLinks = [
+  { label: "特徴", href: "#features" },
+  { label: "FAQ", href: "#faq" },
+  { label: "お問い合わせ", href: "/contact" },
+];
+
+export default function Header() {
+  const { theme, toggleTheme } = useTheme();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <header
+      className={`
+        fixed top-0 left-0 right-0 z-50
+        transition-all duration-300
+        ${isScrolled || isMobileMenuOpen
+          ? theme === "dark"
+            ? "bg-dark-bg/80 backdrop-blur-lg border-b border-white/10"
+            : "bg-white/80 backdrop-blur-lg border-b border-gray-200"
+          : "bg-transparent"
+        }
+      `}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
+          {/* ロゴ */}
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className={`p-1.5 sm:p-2 rounded-lg transition-all duration-300 group-hover:scale-110 ${
+              theme === "dark" 
+                ? "bg-primary-green/10 group-hover:bg-primary-green/20" 
+                : "bg-emerald-100 group-hover:bg-emerald-200"
+            }`}>
+              <CodeBracketIcon className={`w-5 h-5 sm:w-6 sm:h-6 ${
+                theme === "dark" ? "text-primary-green" : "text-emerald-600"
+              }`} />
+            </div>
+            <span className={`text-lg sm:text-xl font-bold ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}>
+              AI<span className={theme === "dark" ? "text-primary-green" : "text-emerald-600"}>Review</span>
+            </span>
+          </Link>
+
+          {/* デスクトップナビゲーション */}
+          <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`font-medium transition-colors duration-300 ${
+                  theme === "dark"
+                    ? "text-white/70 hover:text-primary-green"
+                    : "text-gray-600 hover:text-emerald-600"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* 右側ボタン群 */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* テーマ切り替えトグル */}
+            <button
+              onClick={toggleTheme}
+              className={`
+                p-2 sm:p-2.5 rounded-full transition-all duration-300
+                ${theme === "dark"
+                  ? "bg-white/10 hover:bg-white/20 text-accent-yellow"
+                  : "bg-gray-100 hover:bg-gray-200 text-gray-600"
+                }
+              `}
+              aria-label={theme === "dark" ? "ライトモードに切り替え" : "ダークモードに切り替え"}
+            >
+              {theme === "dark" ? (
+                <SunIcon className="w-5 h-5" />
+              ) : (
+                <MoonIcon className="w-5 h-5" />
+              )}
+            </button>
+
+            {/* ログイン・新規登録 */}
+            <div className="hidden sm:flex items-center gap-2 sm:gap-4">
+              <Link
+                href="/login"
+                className={`px-3 sm:px-4 py-2 font-medium transition-colors duration-300 ${
+                  theme === "dark"
+                    ? "text-white/70 hover:text-white"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                ログイン
+              </Link>
+              <Link
+                href="/signup"
+                className={`
+                  px-4 sm:px-6 py-2 rounded-full font-semibold text-white
+                  transition-all duration-300 hover:scale-105 text-sm sm:text-base
+                  ${theme === "dark"
+                    ? "bg-gradient-to-r from-primary-green to-accent-yellow hover:shadow-glow-green"
+                    : "bg-gradient-to-r from-emerald-600 to-amber-500 hover:shadow-lg"
+                  }
+                `}
+              >
+                無料で始める
+              </Link>
+            </div>
+
+            {/* モバイルメニューボタン */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className={`md:hidden p-2 rounded-lg transition-colors duration-300 ${
+                theme === "dark"
+                  ? "text-white/70 hover:text-white hover:bg-white/10"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              }`}
+              aria-label="メニューを開く"
+            >
+              {isMobileMenuOpen ? (
+                <XMarkIcon className="w-6 h-6" />
+              ) : (
+                <Bars3Icon className="w-6 h-6" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* モバイルメニュー */}
+        {isMobileMenuOpen && (
+          <div className={`md:hidden py-4 border-t transition-colors duration-300 ${
+            theme === "dark" 
+              ? "border-white/10 bg-dark-bg/95 backdrop-blur-lg" 
+              : "border-gray-200 bg-white/95 backdrop-blur-lg"
+          }`}>
+            <nav className="flex flex-col gap-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`font-medium transition-colors duration-300 py-2 ${
+                    theme === "dark"
+                      ? "text-white/70 hover:text-primary-green"
+                      : "text-gray-600 hover:text-emerald-600"
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <hr className={theme === "dark" ? "border-white/10" : "border-gray-200"} />
+              <Link
+                href="/login"
+                className={`font-medium transition-colors duration-300 py-2 ${
+                  theme === "dark"
+                    ? "text-white/70 hover:text-white"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                ログイン
+              </Link>
+              <Link
+                href="/signup"
+                className={`
+                  text-center py-3 rounded-full font-semibold text-white
+                  transition-all duration-300
+                  ${theme === "dark"
+                    ? "bg-gradient-to-r from-primary-green to-accent-yellow"
+                    : "bg-gradient-to-r from-emerald-600 to-amber-500"
+                  }
+                `}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                無料で始める
+              </Link>
+            </nav>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+}
+
