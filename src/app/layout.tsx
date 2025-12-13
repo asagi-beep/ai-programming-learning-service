@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import ThemeRegistry from "@/components/ThemeRegistry";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import SessionProvider from "@/components/SessionProvider";
 import "./globals.css";
 
 const notoSansJP = Noto_Sans_JP({
@@ -43,9 +44,11 @@ export default function RootLayout({
   return (
     <html lang="ja" className={`${notoSansJP.variable} light`}>
       <body className={notoSansJP.className}>
-        <ThemeProvider>
-          <ThemeRegistry>{children}</ThemeRegistry>
-        </ThemeProvider>
+        <SessionProvider>
+          <ThemeProvider>
+            <ThemeRegistry>{children}</ThemeRegistry>
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );
