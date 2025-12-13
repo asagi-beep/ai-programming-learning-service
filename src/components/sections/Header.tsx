@@ -257,7 +257,7 @@ export default function Header() {
                         ダッシュボード
                       </Link>
                       <Link
-                        href="/dashboard/settings"
+                        href="/settings"
                         className={`block px-4 py-2 transition-colors ${
                           theme === "dark"
                             ? "text-white/70 hover:bg-white/5 hover:text-white"
