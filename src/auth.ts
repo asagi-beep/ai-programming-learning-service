@@ -29,6 +29,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   // secretプロパティは値が存在する場合のみ設定
   ...(authSecret ? { secret: authSecret } : {}),
   
+  // 本番環境でリクエストのホストを信頼（AUTH_URLが設定されていない場合に自動検出）
+  trustHost: true,
+  
   // 認証プロバイダー設定
   providers: [
     Google({

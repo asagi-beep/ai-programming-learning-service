@@ -24,8 +24,11 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 AUTH_SECRET=your-auth-secret-key
 NEXTAUTH_SECRET=your-nextauth-secret-key  # 互換性のため（AUTH_SECRETが優先）
 
-# アプリケーションURL（本番環境では実際のドメインに変更）
+# アプリケーションURL
 # NextAuth v5ではAUTH_URLを使用（NEXTAUTH_URLも互換性のため残す）
+# 開発環境: http://localhost:3000
+# 本番環境（Vercel）: 設定不要（trustHost: trueにより自動検出）または https://your-domain.vercel.app
+# ⚠️ 重要: VercelでAUTH_URLを設定する場合、localhost:3000ではなく本番環境のURLを設定してください
 AUTH_URL=http://localhost:3000
 NEXTAUTH_URL=http://localhost:3000  # 互換性のため（AUTH_URLが優先）
 
@@ -72,6 +75,52 @@ openssl rand -base64 32
 ```
 
 生成した値を`.env.local`の`AUTH_SECRET`に設定してください。
+
+## Vercel（本番環境）での設定
+
+### 環境変数の設定
+
+Vercelダッシュボードで以下の環境変数を設定してください：
+
+**必須環境変数：**
+- `AUTH_SECRET` - セッション暗号化キー（必須）
+- `GOOGLE_CLIENT_ID` - Google OAuth クライアントID（必須）
+- `GOOGLE_CLIENT_SECRET` - Google OAuth クライアントシークレット（必須）
+- `MONGODB_URI` - MongoDB接続文字列（必須）
+
+**推奨環境変数：**
+- `AUTH_URL` - **設定しないことを推奨**（`trustHost: true`により自動検出）
+  - もし設定する場合は、`https://your-app.vercel.app`のように本番環境のURLを設定
+  - ⚠️ **絶対に`localhost:3000`を設定しないでください**
+
+### Google Cloud Consoleの設定
+
+本番環境のURLを追加してください：
+
+1. [Google Cloud Console](https://console.cloud.google.com/) にアクセス
+2. プロジェクトを選択
+3. 「APIとサービス」→「認証情報」に移動
+4. OAuth 2.0 クライアント ID を編集
+5. **承認済みの JavaScript 生成元**に追加：
+   ```
+   https://your-app.vercel.app
+   ```
+6. **承認済みのリダイレクト URI**に追加：
+   ```
+   https://your-app.vercel.app/api/auth/callback/google
+   ```
+7. 保存
+
+### トラブルシューティング
+
+**エラー: `ERR_CONNECTION_REFUSED` が `localhost:3000` に発生する場合**
+
+原因：Vercelの環境変数で`AUTH_URL`が`localhost:3000`に設定されている可能性があります。
+
+解決方法：
+1. Vercelダッシュボードで環境変数を確認
+2. `AUTH_URL`が`localhost:3000`に設定されている場合は削除するか、本番環境のURLに変更
+3. 再デプロイを実行
 
 
 
