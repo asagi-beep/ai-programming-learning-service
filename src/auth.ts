@@ -64,31 +64,41 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         try {
           await connectDB();
 
+          // 管理者メールアドレスの確認
+          const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase().trim();
+          const userEmail = user.email?.toLowerCase().trim();
+          const isAdmin = adminEmail && userEmail === adminEmail;
+
           // 既存ユーザーを検索
           const existingUser = await User.findOne({ email: user.email });
 
           if (existingUser) {
             // 既存ユーザーの場合は情報を更新
+            const updateData: any = {
+              name: user.name,
+              image: user.image,
+            };
+            
+            // 管理者メールアドレスの場合はロールも更新
+            if (isAdmin) {
+              updateData.role = "admin";
+            }
+            
             await User.updateOne(
               { email: user.email },
-              {
-                $set: {
-                  name: user.name,
-                  image: user.image,
-                },
-              }
+              { $set: updateData }
             );
-            console.log(`ユーザー情報を更新: ${user.email}`);
+            console.log(`ユーザー情報を更新: ${user.email}${isAdmin ? " (管理者)" : ""}`);
           } else {
             // 新規ユーザーの場合は作成
             const newUser = new User({
               name: user.name,
               email: user.email,
               image: user.image,
-              role: "user",
+              role: isAdmin ? "admin" : "user",
             });
             await newUser.save();
-            console.log(`新規ユーザーを作成: ${user.email}`);
+            console.log(`新規ユーザーを作成: ${user.email}${isAdmin ? " (管理者)" : ""}`);
           }
 
           return true;
