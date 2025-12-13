@@ -7,9 +7,27 @@ import User from "@/models/User";
  * NextAuth.js v5 設定
  * Google OAuth認証とMongoDBユーザー管理を統合
  */
+// 環境変数の検証（開発環境のみ）
+if (process.env.NODE_ENV === "development") {
+  if (!process.env.AUTH_SECRET && !process.env.NEXTAUTH_SECRET) {
+    console.warn(
+      "警告: AUTH_SECRETまたはNEXTAUTH_SECRETが設定されていません。"
+    );
+  }
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    console.warn(
+      "警告: GOOGLE_CLIENT_IDまたはGOOGLE_CLIENT_SECRETが設定されていません。"
+    );
+  }
+}
+
+// secretの値を取得（環境変数から）
+const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  // セッション暗号化キー（NextAuth v5ではAUTH_SECRETを使用）
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+  // NextAuth v5ではAUTH_SECRET環境変数を自動的に使用
+  // secretプロパティは値が存在する場合のみ設定
+  ...(authSecret ? { secret: authSecret } : {}),
   
   // 認証プロバイダー設定
   providers: [
